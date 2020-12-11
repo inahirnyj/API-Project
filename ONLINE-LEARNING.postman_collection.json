@@ -1,0 +1,429 @@
+{
+	"info": {
+		"_postman_id": "17bc795e-3abf-4607-86f2-60bfbbda52da",
+		"name": "ONLINE-LEARNING",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ADMINISTRATOR",
+			"item": [
+				{
+					"name": "Administator-Authorization",
+					"item": [
+						{
+							"name": "Administrator login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9178793c-d23e-447f-ad94-a74480c8c708",
+										"exec": [
+											"var jsonResponse = pm.response.json();",
+											"pm.environment.set(\"administator-token\", jsonResponse.token);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"admin@mail.com\",\n    \"password\":\"123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/login",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Company Data",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{administator-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/company/get?url=",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"company",
+										"get"
+									],
+									"query": [
+										{
+											"key": "url",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Notification Count",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{administator-token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/notify/count",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"notify",
+										"count"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "LECTURER",
+			"item": [
+				{
+					"name": "CREATE-COURSE",
+					"item": [
+						{
+							"name": "1st-Step",
+							"item": [
+								{
+									"name": "Get Category List",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{administator-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/category/list",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"category",
+												"list"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add Course Photo Cover",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "9d4cc44c-9570-4d00-8281-5f18298a567b",
+												"exec": [
+													"var jsonResponse = pm.response.json();",
+													"pm.environment.set(\"course-photo-cover\", jsonResponse.image);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{administator-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/Users/inahirnyy/Documents/diprella/test-data/1479_4.jpg"
+												},
+												{
+													"key": "thumb_image",
+													"type": "file",
+													"src": "/Users/inahirnyy/Documents/diprella/test-data/1479_4.jpg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{URL}}/image/upload",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"image",
+												"upload"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add Course Video Trailer",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "6c13f4d7-db32-4147-8b97-be4596f61496",
+												"exec": [
+													"var jsonResponse = pm.response.json();",
+													"pm.environment.set(\"course-video-trailer\", jsonResponse.link_file);",
+													"pm.environment.set(\"course-video-snapshot\", jsonResponse.link_thumb);",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{administator-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/Users/inahirnyy/Documents/diprella/test-data/movies/dolbycanyon.mp4"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{URL}}/video/upload",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"video",
+												"upload"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Add New Course Skill",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "4d069a98-e44c-4315-8577-f3389fd98dc5",
+												"exec": [
+													"var jsonResponse = pm.response.json();",
+													"pm.environment.set(\"course-new-skill-id\", jsonResponse.id);",
+													"pm.environment.set(\"course-new-skill-name\", jsonResponse.name);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{administator-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"name_category\":\"New API Category\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/category/create",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"category",
+												"create"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "2-nd-Step",
+							"item": [
+								{
+									"name": "Course Create",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "bf76e585-9ee3-49fe-be40-e41bd59b1e4d",
+												"exec": [
+													"var jsonResponse = pm.response.json();",
+													"pm.environment.set(\"course-id\", jsonResponse.id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{administator-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"categories_id\":[2,4,3,{{course-new-skill-id}}],\n    \"industry_id\":[],\n    \"title\":{{$randomProductName}},\n    \"privacy\":\"public\",\n    \"level\":\"beginner\",\n    \"lang\":\"English\",    \n    \"lang_code\":\"en\",\"description\":{{$randomLoremText}},\n    \"image_cover\":{{course-photo-cover}},\n    \"image_thumb\":\"https://demo.erudition.space/docs/c4/1/kDDJETNB.lob\",\n    \"video_cover\":{{course-video-trailer}},\n    \"video_thumb\":{{course-video-snapshot}},\n    \"id\":null,\n    \"category\":[           \n        {\"id\":2,\"name\":\"RDBMS\"},\n        {\"id\":4,\"name\":\"databases\"},\n        {\"id\":3,\"name\":\"Relational Databases\"},\n        {\"name\":{{course-new-skill-name}},\"id\":{{course-new-skill-id}}}\n    ],\n    \"industries\":[],\n    \"owner_type\":\"company\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/course/create",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"course",
+												"create"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Course Module List",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{administator-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/course/module/list?course_id={{course_id}}",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"course",
+												"module",
+												"list"
+											],
+											"query": [
+												{
+													"key": "course_id",
+													"value": "{{course_id}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "USER",
+			"item": [],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

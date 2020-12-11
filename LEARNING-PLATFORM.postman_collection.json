@@ -1,0 +1,957 @@
+{
+	"info": {
+		"_postman_id": "7044fe37-2f50-481d-92b7-e8743a7dd179",
+		"name": "LEARNING-PLATFORM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User-Authorization",
+			"item": [
+				{
+					"name": "User Registration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1ff98914-58b0-4da1-a653-c62ab0e082ae",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"user-token\", jsonData.token);",
+									"pm.environment.set(\"user-firstname\", jsonData.first_name);",
+									"pm.environment.set(\"user-lastname\", jsonData.last_name);",
+									"pm.environment.set(\"user-email\", jsonData.email);",
+									"pm.environment.set(\"user-url\", jsonData.url);",
+									"",
+									"pm.test(\"New User is registered and gets new ID value\", function () {",
+									"    pm.expect(jsonData.id).to.be.not.null;",
+									"});",
+									"",
+									"pm.test(\"Content-Type is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "{{$randomFirstName}}",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "{{$randomLastName}}",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "{{$randomEmail}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmartion",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/sign_up",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"sign_up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Course Statistics",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0381680e-dbee-4358-bac9-baad7aa766de",
+								"exec": [
+									"pm.test(\"Response body should be okay to process\",",
+									"function () {",
+									"    pm.response.to.have.jsonBody;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/courses/statistics",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"courses",
+								"statistics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notify Count",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3778c889-6e9e-4cb6-8817-de8643df7068",
+								"exec": [
+									"pm.test(\"Response body should be okay to process\",",
+									"function () {",
+									"    pm.response.to.have.jsonBody;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://demo.erudition.space/api/notify/count",
+							"protocol": "https",
+							"host": [
+								"demo",
+								"erudition",
+								"space"
+							],
+							"path": [
+								"api",
+								"notify",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile Info Update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "39950d79-4070-4af8-835b-772f3575424e",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Response body contains Status equals TRUE\", function () {",
+									"    pm.expect(jsonData.status).to.eql(true);",
+									"});",
+									"",
+									"//CLEAR ENVIRONMENTAL VARIABLES",
+									"pm.environment.unset(\"user-firstname\");",
+									"pm.environment.unset(\"user-lastname\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ee913a3d-3238-4846-a30f-1cae729a4f0b",
+								"exec": [
+									"pm.environment.set(\"Updated-User-Firstname\", pm.variables.replaceIn('{{$randomFirstName}}'));",
+									"",
+									"pm.environment.set(\"Updated-User-Lastname\", pm.variables.replaceIn('{{$randomLastName}}'));",
+									"",
+									"pm.environment.set(\"Updated-User-Biography\", pm.variables.replaceIn('{{$randomLoremText}}'));",
+									"",
+									"pm.environment.set(\"Updated-User-Headline\", pm.variables.replaceIn('{{$randomPhrase}}'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"options\":\n        {\n            \"avatar\":\"https://demo.erudition.space/docs/c4/1/bbQiAnMI.png\",\n            \"first_name\":\"{{Updated-User-Firstname}}\",\n            \"last_name\":\"{{Updated-User-Lastname}}\",\n            \"biography\":\"{{Updated-User-Biography}}\",\n            \"headline\":\"{{Updated-User-Headline}}\"\n        }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/profile/info/update",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"profile",
+								"info",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Profile Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6ca0a86d-2083-4a66-b4cd-1dcfa1ab9741",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"//var userFirstName = pm.environment.get(\"Updated-User-Firstname\");",
+									"pm.test(\"Recieved correct User data\", function () {",
+									"    pm.expect(jsonData.first_name).to.eql(pm.environment.get(\"Updated-User-Firstname\"));",
+									"    pm.expect(jsonData.last_name).to.eql(pm.environment.get(\"Updated-User-Lastname\"));",
+									"    pm.expect(jsonData.email).to.eql(pm.environment.get(\"user-email\"));",
+									"    pm.expect(jsonData.biography).to.eql(pm.environment.get(\"Updated-User-Biography\"));",
+									"    pm.expect(jsonData.headline).to.eql(pm.environment.get(\"Updated-User-Headline\"));",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/profile/info",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"profile",
+								"info"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ab1e415d-5d08-451c-b49b-64b883966789",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "33dff1b5-c546-4f39-8f23-cba92a9b1cbb",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Lector",
+			"item": [
+				{
+					"name": "Lector-Authorization",
+					"item": [
+						{
+							"name": "Lector-Registration",
+							"item": [
+								{
+									"name": "Lector Registration",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "438269c1-ba2b-4783-a11b-d457efb07325",
+												"exec": [
+													"var jsonData = pm.response.json();",
+													"pm.environment.set(\"lector-token\", jsonData.token);",
+													"pm.environment.set(\"lector-firstname\", jsonData.first_name);",
+													"pm.environment.set(\"lector-lastname\", jsonData.last_name);",
+													"pm.environment.set(\"lector-email\", jsonData.email);",
+													"pm.environment.set(\"lector-url\", jsonData.url);",
+													"pm.environment.set(\"lector-id\", jsonData.id);",
+													"",
+													"pm.test(\"New User is registered and gets new ID value\", function () {",
+													"    pm.expect(jsonData.id).to.be.not.null;",
+													"});",
+													"",
+													"pm.test(\"Content-Type is present\", function () {",
+													"    pm.response.to.have.header(\"Content-Type\");",
+													"});",
+													"",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "first_name",
+													"value": "{{$randomFirstName}}",
+													"type": "text"
+												},
+												{
+													"key": "last_name",
+													"value": "{{$randomLastName}}",
+													"type": "text"
+												},
+												{
+													"key": "email",
+													"value": "{{$randomEmail}}",
+													"type": "text"
+												},
+												{
+													"key": "password",
+													"value": "123456",
+													"type": "text"
+												},
+												{
+													"key": "password_confirmartion",
+													"value": "123456",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{URL}}/sign_up",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"sign_up"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Admin-login",
+							"item": [
+								{
+									"name": "Admin login",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "b68c4a1c-f3f4-4cdc-bc5c-e53d21d0b7a8",
+												"exec": [
+													"var jsonData = pm.response.json();",
+													"pm.environment.set(\"admin-token\", jsonData.token);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "authority",
+												"value": "demo.erudition.space"
+											},
+											{
+												"key": "sec-ch-ua",
+												"value": "\"Chromium\";v=\"86\", \"\"Not\\A;Brand\";v=\"99\", \"Google Chrome\";v=\"86\""
+											},
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "accept-language",
+												"value": "en"
+											},
+											{
+												"key": "sec-ch-ua-mobile",
+												"value": "?0"
+											},
+											{
+												"key": "user-agent",
+												"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+											},
+											{
+												"key": "content-type",
+												"value": "application/json"
+											},
+											{
+												"key": "origin",
+												"value": "https://demo.erudition.space"
+											},
+											{
+												"key": "sec-fetch-site",
+												"value": "same-origin"
+											},
+											{
+												"key": "sec-fetch-mode",
+												"value": "cors"
+											},
+											{
+												"key": "sec-fetch-dest",
+												"value": "empty"
+											},
+											{
+												"key": "referer",
+												"value": "https://demo.erudition.space/auth/login"
+											},
+											{
+												"key": "cookie",
+												"value": "__cfduid=dba977afbf08bcec7e8824f39f2d075ed1605514660; io=v6XcRB9e--Qj-E06AG05"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"email\":\"admin@mail.com\",\n    \"password\":\"123456\"\n}"
+										},
+										"url": {
+											"raw": "{{URL}}/login",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Company Member Role",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{admin-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"email\":\"{{lector-email}}\",\n    \"role\":[\"lecturer\",\"worker\"]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/company/member/role/edit",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"company",
+												"member",
+												"role",
+												"edit"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Creating-Course",
+					"item": [
+						{
+							"name": "Step-1",
+							"item": [
+								{
+									"name": "Get Categories List",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{lector-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/category/list",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"category",
+												"list"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Course Cover Image Upload",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "31ab970a-6d69-43ef-9007-8039e7bb6f8d",
+												"exec": [
+													"var jsonData = pm.response.json();",
+													"pm.environment.set(\"course-photo-cover\", jsonData.image);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{lector-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/Users/inahirnyy/Documents/diprella/test-data/Hamilton_McLaren_MP4-24.jpg"
+												},
+												{
+													"key": "thumb",
+													"type": "file",
+													"src": "/Users/inahirnyy/Documents/diprella/test-data/Depositphotos_15349573_m-2015.jpg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{URL}}/image/upload",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"image",
+												"upload"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Course Video Trailer Upload",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "2b446cfd-48a5-4ccd-9ec4-220ab1b762b2",
+												"exec": [
+													"var jsonData = pm.response.json();",
+													"pm.environment.set(\"course-video-trailer\", jsonData.link_file);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{lector-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/Users/inahirnyy/Documents/diprella/test-data/movies/grb_2.mp4"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{URL}}/video/upload",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"video",
+												"upload"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Course Skill Create",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "03f46495-b1ee-4326-86f6-94bf678f845d",
+												"exec": [
+													"var jsonData = pm.response.json();",
+													"pm.environment.set(\"course-category-id\", jsonData.id);",
+													"pm.environment.set(\"course-category\", jsonData.name);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{lector-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "authority",
+												"value": "demo.erudition.space"
+											},
+											{
+												"key": "sec-ch-ua",
+												"value": "\"Chromium\";v=\"86\", \"\"Not\\A;Brand\";v=\"99\", \"Google Chrome\";v=\"86\""
+											},
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "authorization",
+												"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjM2MywiaXNzIjoiaHR0cDovL2RlbW8uZXJ1ZGl0aW9uLnNwYWNlL2FwaS9sb2dpbiIsImlhdCI6MTYwNTY0MDk4MywiZXhwIjoxNjA4MjY4OTgzLCJuYmYiOjE2MDU2NDA5ODMsImp0aSI6InBYQmJneUlWYjZsaTdMbW4ifQ.ngQX5vaRcYl2mL4yEPtZXQHCEQcqOWeFxi3rd9yNOrs"
+											},
+											{
+												"key": "accept-language",
+												"value": "en"
+											},
+											{
+												"key": "sec-ch-ua-mobile",
+												"value": "?0"
+											},
+											{
+												"key": "user-agent",
+												"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+											},
+											{
+												"key": "content-type",
+												"value": "application/json"
+											},
+											{
+												"key": "origin",
+												"value": "https://demo.erudition.space"
+											},
+											{
+												"key": "sec-fetch-site",
+												"value": "same-origin"
+											},
+											{
+												"key": "sec-fetch-mode",
+												"value": "cors"
+											},
+											{
+												"key": "sec-fetch-dest",
+												"value": "empty"
+											},
+											{
+												"key": "referer",
+												"value": "https://demo.erudition.space/create-course/first"
+											},
+											{
+												"key": "cookie",
+												"value": "__cfduid=dba977afbf08bcec7e8824f39f2d075ed1605514660; io=wVfDCjrRiNDJoV1zAG1F"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"name_category\":\"{{$randomProductName}}\"\n}"
+										},
+										"url": {
+											"raw": "{{URL}}/category/create",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"category",
+												"create"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Course Create",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "e17aed62-53fa-4f93-ac9b-e7d7cb61831e",
+												"exec": [
+													"var jsonData = pm.response.json();",
+													"pm.environment.set(\"public-course-id\", jsonData.id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{lector-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"categories_id\":[{{course-category-id}},10,17,4,84],\n    \"industry_id\":[],\n    \"title\":\"{{$randomPhrase}}\",\n    \"privacy\":\"public\",\n    \"level\":\"beginner\",\n    \"lang\":\"English\",\n    \"lang_code\":\"en\",\n    \"description\":\"{{$randomLoremText}}\",\n    \"image_thumb\":\"{{course-photo-cover}}\",\n    \"video_cover\":\"{{course-video-trailer}}\",\n    \"video_thumb\":\"{{course-video-trailer-thumb}}\",\n    \"id\":null,\n    \"category\":[{\"id\":{{course-category-id}},\"name\":\"{{course-category}}\"},{\"id\":10,\"name\":\"quality\"},{\"id\":17,\"name\":\"API\"},{\"id\":4,\"name\":\"databases\"},\n    {\"name\":\"Keywords\",\"id\":84}],\n    \"industries\":[],\n    \"owner_type\":\"company\"}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/course/create",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"course",
+												"create"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Step-2",
+							"item": [
+								{
+									"name": "Course Modules List",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{lector-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/course/module/list?course_id={{public-course-id}}",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"course",
+												"module",
+												"list"
+											],
+											"query": [
+												{
+													"key": "course_id",
+													"value": "{{public-course-id}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Course Rules",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{lector-token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/course/rules?course_id={{public-course-id}}",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"course",
+												"rules"
+											],
+											"query": [
+												{
+													"key": "course_id",
+													"value": "{{public-course-id}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dea7ec83-9f57-46f6-ba83-b099022195a4",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "6930f774-7530-44c3-86fa-47fe1de68ba0",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);",
+							"});"
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
